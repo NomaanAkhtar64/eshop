@@ -8,15 +8,24 @@ class Category(models.Model):
     name = models.CharField(max_length=55)
     slug = models.SlugField(blank=True)
 
+    def __str__(self) -> str:
+        return self.name
+
+    class Meta:
+        verbose_name_plural = "Categories"
+
 
 def brand_uploader(inst, filename):
-    return f"brands/{slugify(inst.name)}"
+    return f"brands/{slugify(inst.name)}.{get_ext(filename)}"
 
 
 class Brand(models.Model):
     name = models.CharField(max_length=55)
     slug = models.SlugField(blank=True)
     logo = models.ImageField(upload_to=brand_uploader)
+
+    def __str__(self) -> str:
+        return self.name
 
 
 class Dimension(models.Model):
@@ -40,6 +49,10 @@ def product_main_uploader(inst, filename):
     return f"product/{slugify(inst.name)}/main.{get_ext(filename)}"
 
 
+def product_thumbnail_uploader(inst, filename):
+    return f"product/{slugify(inst.name)}/thumbnail.{get_ext(filename)}"
+
+
 class Product(models.Model):
     # NAMING #
     name = models.CharField(max_length=255)
@@ -47,6 +60,9 @@ class Product(models.Model):
 
     # PHOTOGRAPHS
     main_image = models.ImageField(upload_to=product_main_uploader)
+    thumbnail_image = models.ImageField(
+        upload_to=product_thumbnail_uploader, blank=True
+    )
 
     # WEBSITE CONTROLS
     is_active = models.BooleanField(default=False)
@@ -54,8 +70,12 @@ class Product(models.Model):
 
     # ECONOMICS #
     base_price = models.FloatField()
-    profit_percentage = models.FloatField()
-    sale_percentage = models.FloatField(blank=True)
+    sale_price = models.FloatField()
+
+    def profit_percentage(self):
+        return (self.sale_price / self.base_price) * 100
+
+    sale_percentage = models.FloatField(blank=True, null=True)
 
     # STATS
     sold = models.PositiveIntegerField(default=0)
@@ -86,8 +106,10 @@ class Product(models.Model):
         return total_rating_sum / total_ratings
 
     # PHYSICAL FEATURES #
-    dimensions = models.ForeignKey(to=Dimension, on_delete=models.CASCADE)
-    colors = models.ManyToManyField(to=Color)
+    dimensions = models.ForeignKey(
+        to=Dimension, on_delete=models.CASCADE, blank=True, null=True
+    )
+    colors = models.ManyToManyField(to=Color, blank=True)
 
     # CATEGORIZATION #
     category = models.ForeignKey(to=Category, on_delete=models.CASCADE)
