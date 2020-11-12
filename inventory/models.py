@@ -30,6 +30,13 @@ class Brand(models.Model):
 
 class Dimension(models.Model):
     #  DIFFERENT DEPENDING ON THE PRODUCT
+    DIMENSION_TYPES = (
+        (0, "3d Object"),
+        (1, "2d+t Sheet"),
+        (2, "2d Sheet"),
+        (3, "Shoes"),
+    )
+    type = models.CharField(max_length=55, choices=DIMENSION_TYPES)
     length = models.FloatField(blank=True)
     breadth = models.FloatField(blank=True)
     width = models.FloatField(blank=True)

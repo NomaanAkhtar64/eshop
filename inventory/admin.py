@@ -42,9 +42,14 @@ class BrandAdmin(admin.ModelAdmin):
     readonly_fields = ("slug",)
 
 
+class DimensionAdmin(admin.ModelAdmin):
+    class Media:
+        js = ("inventory/admin/dimension.js",)
+
+
 admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductImage, ProductImageAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Brand, BrandAdmin)
-admin.site.register(Dimension)
+admin.site.register(Dimension, DimensionAdmin)
 admin.site.register(Color)
