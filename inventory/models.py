@@ -1,4 +1,4 @@
-from inventory.utils import get_ext
+from inventory.utils import compress_and_resize_image, get_ext
 from django.db import models
 from django.utils.text import slugify
 from django.apps import apps

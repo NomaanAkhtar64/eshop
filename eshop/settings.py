@@ -13,7 +13,7 @@ SECRET_KEY = "n#lsqd95_t(p$6+h^6=)y^p)qtz+*4_1h(*uyrjn6d5n-**ysa"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost"]
 
 
 # Application definition

@@ -1,6 +1,7 @@
-from inventory.utils import make_thumbnail_field, resize_image, safe_delete
+# from inventory.utils import make_thumbnail_field, resize_image, safe_delete
+from inventory.utils import compress_and_resize_image
 from django.dispatch import receiver
-from django.db.models.signals import post_save, pre_save, post_delete
+from django.db.models.signals import pre_save
 from django.utils.text import slugify
 from .models import Brand, Category, Product, ProductImage
 
@@ -18,17 +19,24 @@ for model in [Category, Brand, Product]:
     pre_save.connect(slugify_from_name, sender=model)
 
 
-@receiver(post_save, sender=Brand)
+# @receiver(post_save, sender=Brand)
+# def compress_brand_logo(sender, instance: Brand, **kw):
+#     # if instance.pk:
+#     #     old: Brand = sender.objects.get(pk=instance.pk)
+#     #     if old.logo != instance.logo:
+#     #         resize_image((500, 500), instance.logo)
+#     # else:
+
+#     instance.logo = resize_image((500, 500), instance.logo)
+
+
+# @receiver(post_delete, sender=Brand)
+# def cleanup_brand_logo(sender, instance: Brand, **kw):
+#     safe_delete(instance.logo.path)
+
+
+@receiver(pre_save, sender=Brand)
 def compress_brand_logo(sender, instance: Brand, **kw):
-    # if instance.pk:
-    #     old: Brand = sender.objects.get(pk=instance.pk)
-    #     if old.logo != instance.logo:
-    #         resize_image((500, 500), instance.logo)
-    # else:
-
-    instance.logo = resize_image((500, 500), instance.logo)
-
-
-@receiver(post_delete, sender=Brand)
-def cleanup_brand_logo(sender, instance: Brand, **kw):
-    safe_delete(instance.logo.path)
+    instance.logo.save(
+        *compress_and_resize_image(instance.logo, (500, 500)), save=False
+    )
