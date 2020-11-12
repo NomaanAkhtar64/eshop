@@ -1,7 +1,7 @@
 # from inventory.utils import make_thumbnail_field, resize_image, safe_delete
-from inventory.utils import compress_and_resize_image
+from inventory.utils import compress_and_resize_image, safe_delete
 from django.dispatch import receiver
-from django.db.models.signals import pre_save
+from django.db.models.signals import post_delete, pre_save
 from django.utils.text import slugify
 from .models import Brand, Category, Product, ProductImage
 
@@ -40,3 +40,8 @@ def compress_brand_logo(sender, instance: Brand, **kw):
     instance.logo.save(
         *compress_and_resize_image(instance.logo, (500, 500)), save=False
     )
+
+
+@receiver(post_delete, sender=Brand)
+def cleanup_logo(sender, instance: Brand, **kw):
+    safe_delete(instance.logo.path)
