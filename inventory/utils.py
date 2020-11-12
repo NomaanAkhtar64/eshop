@@ -58,23 +58,6 @@ def make_thumbnail_field(size, reciever, source):
     )
 
 
-# def resize_image(size, field):
-#     base_image = Image.open(field.path)
-#     out_file_path = ".".join(field.path.split(".")[:-1]) + ".jpg"
-#     # out_name = os.path.split(out_file_path)[-1]
-
-#     im = get_rgb_image(base_image)
-#     base_image.close()
-
-#     im.thumbnail(size)
-#     im.save(out_file_path, "JPEG", quality=85)
-
-#     im.close()
-#     safe_delete(field.path)
-
-#     return out_file_path
-
-
 def remove_ext(path):
     return ".".join(path.split(".")[:-1])
 
